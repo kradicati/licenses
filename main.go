@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/joho/godotenv"
-	"licenses/platform/middleware/fbauth"
+	"licenses/internal/firebase"
 	"licenses/platform/router"
 	"log"
 	"net/http"
@@ -13,7 +13,7 @@ func main() {
 		log.Fatalf("Failed to load the env vars: %v", err)
 	}
 
-	client, err := fbauth.InitAuth()
+	client, err := firebase.InitAuth()
 
 	if err != nil {
 		log.Fatalln("failed to init firebase auth", err)

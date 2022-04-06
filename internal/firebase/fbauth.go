@@ -1,4 +1,4 @@
-package fbauth
+package firebase
 
 import (
 	"context"
