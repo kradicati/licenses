@@ -2,33 +2,38 @@ package repository
 
 import (
 	"cloud.google.com/go/firestore"
-	"context"
-	"licenses/data/model"
+	"google.golang.org/api/iterator"
 )
 
 type Repository[T interface{}] interface {
-	Get(id string, obj *T) T
-	Insert(id string, obj *T)
+	Get(id string, obj *T) error
+	Insert(id string, obj *T) error
 }
 
-type LicenseRepository struct {
-	Client     *firestore.Client
-	Collection *firestore.CollectionRef
-}
+// IteratorToArray probably not the correct place to put this
+func iteratorToArray[T interface{}](iter *firestore.DocumentIterator, array *[]T) error {
+	defer iter.Stop()
 
-func (repo LicenseRepository) Get(id string, obj *model.License) error {
-	get, err := repo.Collection.Doc(id).Get(context.Background())
-	if err != nil {
-		return err
+	var object *T
+
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+
+		if err != nil {
+			return err
+		}
+
+		err = doc.DataTo(object)
+
+		if err != nil {
+			return err
+		}
+
+		*array = append(*array, *object)
 	}
 
-	err = get.DataTo(obj)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (repo LicenseRepository) Insert(id string, obj *model.License) error {
 	return nil
 }

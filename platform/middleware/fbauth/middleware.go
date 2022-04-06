@@ -3,10 +3,8 @@ package fbauth
 import (
 	"firebase.google.com/go/auth"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"strings"
-	"time"
 )
 
 const (
@@ -20,10 +18,7 @@ const (
 // AuthJWT Gin middleware for JWT auth
 func AuthJWT(client *auth.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		startTime := time.Now()
-
 		authHeader := c.Request.Header.Get(authorizationHeader)
-		log.Println("authHeader", authHeader)
 		token := strings.Replace(authHeader, "Bearer ", "", 1)
 		idToken, err := client.VerifyIDToken(c, token)
 		if err != nil {
@@ -33,8 +28,6 @@ func AuthJWT(client *auth.Client) gin.HandlerFunc {
 			})
 			return
 		}
-
-		log.Println("Auth time:", time.Since(startTime))
 
 		c.Set(valName, idToken)
 		c.Next()
