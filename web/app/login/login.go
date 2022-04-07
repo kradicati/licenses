@@ -13,6 +13,8 @@ type Login struct {
 
 func Handle(client *auth.Client) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		log.Println("yes")
+
 		var login Login
 
 		err := ctx.Bind(&login)
