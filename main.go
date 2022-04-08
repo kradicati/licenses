@@ -29,12 +29,12 @@ func main() {
 		log.Fatalln("failed to init firebase auth", err)
 	}
 
-	_, err = fb.InitFireStore(app)
+	store, err := fb.InitFireStore(app)
 	if err != nil {
 		log.Fatalln("failed to init firestore", err)
 	}
 
-	rtr := router.New(auth)
+	rtr := router.New(auth, store)
 
 	port := os.Getenv("PORT")
 

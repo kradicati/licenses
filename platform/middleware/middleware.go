@@ -1,4 +1,4 @@
-package fbauth
+package middleware
 
 import (
 	"firebase.google.com/go/auth"
@@ -30,6 +30,7 @@ func AuthJWT(client *auth.Client) gin.HandlerFunc {
 		}
 
 		c.Set(FbToken, idToken)
+		c.Set("uid", idToken.UID)
 		c.Next()
 	}
 }

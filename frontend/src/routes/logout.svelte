@@ -4,7 +4,7 @@
     import {getAuth, signOut} from "firebase/auth";
 
     authStore.subscribe(async info => {
-        if (info.isLoggedIn && info.firebaseControlled) {
+        if (info.isLoggedIn) {
             const auth = getAuth();
 
             await signOut(auth)

@@ -5,30 +5,36 @@
     import {onMount} from "svelte";
     import {initializeApp} from "firebase/app";
     import authStore from "../stores/authStore";
+    import axios from "axios";
+    import {firebaseConfig} from "../lib/app";
 
-    onMount(() => {
-        const firebaseConfig = {
-            apiKey: "AIzaSyBrH3kOtyktbNXDS2ZsDER9t8Q7SpPCth4",
-            authDomain: "licenses-506d2.firebaseapp.com",
-            projectId: "licenses-506d2",
-            storageBucket: "licenses-506d2.appspot.com",
-            messagingSenderId: "893763060692",
-            appId: "1:893763060692:web:69357f5dae5c2feded0c41"
-        };
+    axios.interceptors.request.use(
+        async function (request) {
+            const user = getAuth().currentUser;
 
-        initializeApp(firebaseConfig);
+            if (user) {
+                try {
+                    const token = await user.getIdToken(false); // Force refresh is false
+                    request.headers["Authorization"] = "Bearer " + token;
+                    console.log(token)
+                } catch (error) {
+                    console.log("Error obtaining auth token in interceptor, ", error);
+                }
+            }
 
-        const auth = getAuth()
+            return request;
+        })
+
+    onMount(async () => {
+        await initializeApp(firebaseConfig);
+
+        const auth = await getAuth()
         onAuthStateChanged(auth, (user) => {
             authStore.set({
                 isLoggedIn: user !== null,
                 user,
-                firebaseControlled: true
             })
         })
-        console.log(auth.currentUser.getIdToken().then(token => {
-            console.log(token)
-        }))
     })
 </script>
 

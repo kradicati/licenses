@@ -2,19 +2,15 @@ package repository
 
 import (
 	"cloud.google.com/go/firestore"
+	"fmt"
 	"google.golang.org/api/iterator"
 )
-
-type Repository[T interface{}] interface {
-	Get(id string, obj *T) error
-	Insert(id string, obj *T) error
-}
 
 // IteratorToArray probably not the correct place to put this
 func iteratorToArray[T interface{}](iter *firestore.DocumentIterator, array *[]T) error {
 	defer iter.Stop()
 
-	var object *T
+	object := new(T)
 
 	for {
 		doc, err := iter.Next()
@@ -29,6 +25,7 @@ func iteratorToArray[T interface{}](iter *firestore.DocumentIterator, array *[]T
 		err = doc.DataTo(object)
 
 		if err != nil {
+			fmt.Println("2", err.Error())
 			return err
 		}
 

@@ -1,15 +1,28 @@
 package router
 
 import (
+	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"licenses/platform/middleware/fbauth"
+	"licenses/data/repository"
+	"licenses/platform/middleware"
 	"licenses/web/app/license/create"
+	license_delete "licenses/web/app/license/license/delete"
+	"licenses/web/app/license/license/get"
+	"licenses/web/app/license/list"
+	"licenses/web/app/verify"
 )
 
-func New(client *auth.Client) *gin.Engine {
+var (
+	licenseRepository *repository.LicenseRepository
+	userRepository    *repository.UserRepository
+)
+
+func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 	router := gin.Default()
+
+	initFireStore(store)
 
 	/*
 		router.Use(cors.New(cors.Config{
@@ -28,11 +41,17 @@ func New(client *auth.Client) *gin.Engine {
 
 	router.Use(configCors())
 
+	router.GET("/api/v1/verify/:id", verify.Handler(licenseRepository))
+
 	v1 := router.Group("/api/v1")
 
-	v1.Use(fbauth.AuthJWT(client))
+	v1.Use(middleware.AuthJWT(client))
 
-	v1.POST("/licenses", create.Handler)
+	v1.POST("/licenses", create.Handler(licenseRepository))
+	v1.GET("/licenses", list.Handler(licenseRepository))
+
+	v1.GET("/licenses/:id", license_get.Handler(licenseRepository))
+	v1.DELETE("/licenses/:id", license_delete.Handler(licenseRepository))
 
 	return router
 }
@@ -41,5 +60,11 @@ func configCors() gin.HandlerFunc {
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000"}
 	config.AllowCredentials = true
+	config.AllowHeaders = append(config.AllowHeaders, "X-Requested-With", "Accept", "Authorization")
 	return cors.New(config)
+}
+
+func initFireStore(store *firestore.Client) {
+	licenseRepository = repository.NewLicenseRepository(store)
+	userRepository = repository.NewUserRepository(store)
 }

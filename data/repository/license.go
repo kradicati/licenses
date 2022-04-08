@@ -34,6 +34,34 @@ func (repo LicenseRepository) Insert(id string, obj *model.License) error {
 	return nil
 }
 
+func (repo LicenseRepository) Update(id string, update *[]firestore.Update) error {
+	_, err := repo.Collection.Doc(id).Update(context.Background(), *update)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo LicenseRepository) UpdateIpLog(id string, ips ...string) error {
+	update := []firestore.Update{{Path: "ip_log", Value: ips}}
+	err := repo.Update(id, &update)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo LicenseRepository) Delete(id string) error {
+	_, err := repo.Collection.Doc(id).Delete(context.Background())
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (repo LicenseRepository) FindAll(query *firestore.Query, obj *[]model.License) error {
 	iter := query.Documents(context.Background())
 
