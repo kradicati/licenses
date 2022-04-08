@@ -52,6 +52,13 @@ func (repo LicenseRepository) FindAllByIp(ip string, obj *[]model.License) error
 	return err
 }
 
+func (repo LicenseRepository) FindAllByUser(user string, obj *[]model.License) error {
+	query := repo.Collection.Where("creator", "==", user)
+	err := repo.FindAll(&query, obj)
+
+	return err
+}
+
 func NewLicenseRepository(client *firestore.Client) *LicenseRepository {
 	repo := &LicenseRepository{
 		Client:     client,

@@ -26,6 +26,9 @@
                 firebaseControlled: true
             })
         })
+        console.log(auth.currentUser.getIdToken().then(token => {
+            console.log(token)
+        }))
     })
 </script>
 

@@ -27,7 +27,7 @@
             <h1 class="h3 mb-3 fw-normal">Log in</h1>
 
             <div class="form-floating mb-3">
-                <input bind:value={email} type="email" class="form-control" placeholder="Email" style="">
+                <input bind:value={email} type="email" class="form-control" placeholder="Email">
                 <label>Email</label>
             </div>
 

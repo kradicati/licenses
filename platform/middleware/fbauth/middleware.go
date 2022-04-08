@@ -10,7 +10,7 @@ import (
 const (
 	authorizationHeader = "Authorization"
 	apiKeyHeader        = "X-API-Key"
-	valName             = "FIREBASE_ID_TOKEN"
+	FbToken             = "FIREBASE_ID_TOKEN"
 )
 
 // https://github.com/MousyBusiness/AppEngineAPI/blob/master/internal/mauth/middleware.go
@@ -20,7 +20,7 @@ func AuthJWT(client *auth.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.Request.Header.Get(authorizationHeader)
 		token := strings.Replace(authHeader, "Bearer ", "", 1)
-		idToken, err := client.VerifyIDToken(c, token)
+		idToken, err := client.VerifyIDToken(c, token) // TODO Check for revocation
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"code":    http.StatusUnauthorized,
@@ -29,7 +29,7 @@ func AuthJWT(client *auth.Client) gin.HandlerFunc {
 			return
 		}
 
-		c.Set(valName, idToken)
+		c.Set(FbToken, idToken)
 		c.Next()
 	}
 }

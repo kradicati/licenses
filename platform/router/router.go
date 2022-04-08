@@ -5,7 +5,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"licenses/platform/middleware/fbauth"
-	"licenses/web/app/login"
+	"licenses/web/app/license/create"
 )
 
 func New(client *auth.Client) *gin.Engine {
@@ -32,11 +32,7 @@ func New(client *auth.Client) *gin.Engine {
 
 	v1.Use(fbauth.AuthJWT(client))
 
-	v1.GET("/test", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "Authenticated"})
-	})
-
-	router.POST("/login", login.Handle(client))
+	v1.POST("/licenses", create.Handler)
 
 	return router
 }
