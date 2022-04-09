@@ -9,6 +9,7 @@ import (
 	"licenses/platform/middleware"
 	"licenses/web/app/licenses"
 	"licenses/web/app/licenses/license"
+	"licenses/web/app/users"
 	"licenses/web/app/verify"
 )
 
@@ -41,19 +42,32 @@ func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 
 	router.GET("/api/v1/verify/:id", verify.Handler(licenseRepository))
 
-	{
+	{ // v1
 		v1 := router.Group("/api/v1")
 
 		v1.Use(middleware.AuthJWT(client))
+		{ // licenses
+			licenseGroup := v1.Group("/licenses")
 
-		v1.POST("/licenses", licenses.Create(licenseRepository))
-		v1.GET("/licenses", licenses.List(licenseRepository))
+			licenseGroup.Use(middleware.CheckAPIKey(userRepository))
 
-		{
-			mgmt := v1.Group("/:id")
+			licenseGroup.POST("/", licenses.Create(licenseRepository, userRepository))
+			licenseGroup.GET("/", licenses.List(licenseRepository))
 
-			mgmt.GET("/", license.Get)
-			mgmt.DELETE("/", license.Delete(licenseRepository))
+			{ // :id
+				mgmt := licenseGroup.Group("/:id")
+
+				mgmt.Use(middleware.CheckLicenseAccess(licenseRepository))
+
+				mgmt.GET("/", license.Get)
+				mgmt.DELETE("/", license.Delete(licenseRepository))
+			}
+		}
+
+		{ // users
+			userGroup := v1.Group("/users")
+
+			userGroup.POST("/", middleware.CheckRoles("admin"), users.Create(client))
 		}
 	}
 

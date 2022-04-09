@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"licenses/data/model"
 	"licenses/data/repository"
+	"licenses/internal"
 	"net/http"
 	"time"
 )
@@ -30,12 +31,12 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 
 		ip := c.ClientIP()
 
-		if license.WhitelistedIps != nil && len(license.WhitelistedIps) > 0 && !stringInSlice(ip, license.WhitelistedIps) {
+		if license.WhitelistedIps != nil && len(license.WhitelistedIps) > 0 && !internal.StringInSlice(ip, license.WhitelistedIps) {
 			abort(c)
 			return
 		}
 
-		if license.BlacklistedIps != nil && len(license.BlacklistedIps) > 0 && stringInSlice(ip, license.BlacklistedIps) {
+		if license.BlacklistedIps != nil && len(license.BlacklistedIps) > 0 && internal.StringInSlice(ip, license.BlacklistedIps) {
 			abort(c)
 			return
 		}
@@ -49,15 +50,6 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 
 		c.JSON(http.StatusOK, gin.H{"message": http.StatusText(http.StatusOK)})
 	}
-}
-
-func stringInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
 }
 
 func abort(c *gin.Context) {

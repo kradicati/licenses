@@ -25,7 +25,7 @@ func AuthJWT(client *auth.Client) gin.HandlerFunc {
 
 		authHeader := c.Request.Header.Get(authorizationHeader)
 		token := strings.Replace(authHeader, "Bearer ", "", 1)
-		idToken, err := client.VerifyIDToken(c, token) // TODO Check for revocation
+		idToken, err := client.VerifyIDToken(c, token)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"code":    http.StatusUnauthorized,
@@ -34,7 +34,7 @@ func AuthJWT(client *auth.Client) gin.HandlerFunc {
 			return
 		}
 
-		c.Set(fbToken, idToken)
+		c.Set("token", idToken)
 		c.Set("uid", idToken.UID)
 		c.Set("authenticated", "jwt")
 		c.Next()
