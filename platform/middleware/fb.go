@@ -9,8 +9,7 @@ import (
 
 const (
 	authorizationHeader = "Authorization"
-	apiKeyHeader        = "X-API-Key"
-	FbToken             = "FIREBASE_ID_TOKEN"
+	fbToken             = "FIREBASE_ID_TOKEN"
 )
 
 // https://github.com/MousyBusiness/AppEngineAPI/blob/master/internal/mauth/middleware.go
@@ -18,6 +17,12 @@ const (
 // AuthJWT Gin middleware for JWT auth
 func AuthJWT(client *auth.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		authenticated, e := c.Get("authenticated")
+		if e && authenticated == "apiKey" {
+			c.Next()
+			return
+		}
+
 		authHeader := c.Request.Header.Get(authorizationHeader)
 		token := strings.Replace(authHeader, "Bearer ", "", 1)
 		idToken, err := client.VerifyIDToken(c, token) // TODO Check for revocation
@@ -29,8 +34,9 @@ func AuthJWT(client *auth.Client) gin.HandlerFunc {
 			return
 		}
 
-		c.Set(FbToken, idToken)
+		c.Set(fbToken, idToken)
 		c.Set("uid", idToken.UID)
+		c.Set("authenticated", "jwt")
 		c.Next()
 	}
 }

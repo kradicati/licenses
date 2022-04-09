@@ -1,4 +1,4 @@
-package license_delete
+package middleware
 
 import (
 	"github.com/gin-gonic/gin"
@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
+func CheckLicenseAccess(repository *repository.LicenseRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
 
@@ -21,7 +21,7 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 
 		err := repository.Get(id, license)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Couldn't find that license."})
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Couldn't find that licenses."})
 			return
 		}
 
@@ -30,12 +30,8 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 			return
 		}
 
-		err = repository.Delete(id)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": http.StatusText(http.StatusUnauthorized)})
-			return
-		}
+		c.Set("licenses", license)
 
-		c.JSON(http.StatusOK, gin.H{"message": http.StatusText(http.StatusOK)})
+		c.Next()
 	}
 }

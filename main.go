@@ -12,6 +12,7 @@ import (
 	"os"
 )
 
+//TODO put everything as {"message":..."} for errors
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Failed to load the env vars: %v", err)

@@ -7,10 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"licenses/data/repository"
 	"licenses/platform/middleware"
-	"licenses/web/app/license/create"
-	license_delete "licenses/web/app/license/license/delete"
-	"licenses/web/app/license/license/get"
-	"licenses/web/app/license/list"
+	"licenses/web/app/licenses"
+	"licenses/web/app/licenses/license"
 	"licenses/web/app/verify"
 )
 
@@ -43,15 +41,21 @@ func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 
 	router.GET("/api/v1/verify/:id", verify.Handler(licenseRepository))
 
-	v1 := router.Group("/api/v1")
+	{
+		v1 := router.Group("/api/v1")
 
-	v1.Use(middleware.AuthJWT(client))
+		v1.Use(middleware.AuthJWT(client))
 
-	v1.POST("/licenses", create.Handler(licenseRepository))
-	v1.GET("/licenses", list.Handler(licenseRepository))
+		v1.POST("/licenses", licenses.Create(licenseRepository))
+		v1.GET("/licenses", licenses.List(licenseRepository))
 
-	v1.GET("/licenses/:id", license_get.Handler(licenseRepository))
-	v1.DELETE("/licenses/:id", license_delete.Handler(licenseRepository))
+		{
+			mgmt := v1.Group("/:id")
+
+			mgmt.GET("/", license.Get)
+			mgmt.DELETE("/", license.Delete(licenseRepository))
+		}
+	}
 
 	return router
 }

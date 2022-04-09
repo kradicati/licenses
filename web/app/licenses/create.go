@@ -1,7 +1,6 @@
-package create
+package licenses
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"licenses/data/model"
 	"licenses/data/repository"
@@ -9,7 +8,8 @@ import (
 	"time"
 )
 
-func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
+func Create(licenseRepository *repository.LicenseRepository,
+	userRepository *repository.UserRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		license := &model.License{}
 
@@ -31,11 +31,11 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 		license.WhitelistedIps = makeIfAbsent(license.WhitelistedIps)
 		license.BlacklistedIps = makeIfAbsent(license.BlacklistedIps)
 
-		fmt.Println()
+		userRepository.Insert()
 
-		err = repository.Insert(license.Id, license)
+		err = licenseRepository.Insert(license.Id, license)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert license into database." + err.Error()})
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert licenses into database." + err.Error()})
 			return
 		}
 

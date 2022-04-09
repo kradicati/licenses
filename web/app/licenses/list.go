@@ -1,4 +1,4 @@
-package list
+package licenses
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
+func List(repository *repository.LicenseRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		uid, e := c.Get("uid")
 		if !e {
