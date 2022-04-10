@@ -76,7 +76,7 @@ func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 
 func configCors() gin.HandlerFunc {
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowOrigins = []string{"http://localhost:3000", "http://127.0.0.1:3000"}
 	config.AllowCredentials = true
 	config.AllowHeaders = append(config.AllowHeaders, "X-Requested-With", "Accept", "Authorization")
 	return cors.New(config)

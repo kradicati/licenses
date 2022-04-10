@@ -23,7 +23,9 @@
   "dependencies": {
     "axios": "^0.26.1",
     "bootstrap": "^5.1.3",
+    "bootstrap-icons": "^1.8.1",
     "firebase": "^9.6.10",
+    "moment": "^2.29.2",
     "sveltestrap": "^5.9.0"
   }
 }

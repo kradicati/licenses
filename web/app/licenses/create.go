@@ -1,7 +1,6 @@
 package licenses
 
 import (
-	"cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
 	"licenses/data/model"
 	"licenses/data/repository"
@@ -32,18 +31,20 @@ func Create(licenseRepository *repository.LicenseRepository,
 		license.WhitelistedIps = makeIfAbsent(license.WhitelistedIps)
 		license.BlacklistedIps = makeIfAbsent(license.BlacklistedIps)
 
-		user := model.User{}
-		err = userRepository.Get(uid.(string), &user)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Failed to find user."})
-			return
-		}
+		/*
+			user := model.User{}
+			err = userRepository.Get(uid.(string), &user)
+			if err != nil {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Failed to find user."})
+				return
+			}
 
-		err = userRepository.Update(uid.(string), &[]firestore.Update{{Path: "ip_log", Value: append(user.Licenses, license.Id)}})
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Failed to create new license."})
-			return
-		}
+			err = userRepository.Update(uid.(string), &[]firestore.Update{{Path: "ip_log", Value: append(user.Licenses, license.Id)}})
+			if err != nil {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Failed to create new license."})
+				return
+			}
+		*/
 
 		err = licenseRepository.Insert(license.Id, license)
 		if err != nil {

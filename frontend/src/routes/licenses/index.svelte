@@ -3,22 +3,20 @@
     import authStore from "../../stores/authStore";
     import {Col, Row} from "sveltestrap/src";
     import axios from "axios";
-
-    $: loadData = async () => {
-        return await axios.get('http://localhost:8000/api/v1/licenses')
-    }
+    import {Container} from "sveltestrap";
 </script>
 
-<Row>
-    <Col>
-        {#if $authStore.isLoggedIn}
-            {#await loadData()}
-                Waiting...
-            {:then list}
-                {JSON.stringify(list.data, null, 1)}
-            {:catch error}
-                <p style="color: red">{error.message}</p>
-            {/await}
-        {/if}
-    </Col>
-</Row>
+<Container class="p-3 m-4">
+    <h1 class="text-light mb-4">Licenses</h1>
+    <Row>
+        <Col class="bg-dark rounded shadow-lg p-3 me-5 ms-2">
+            <h4 class="text-light">Licenses</h4>
+        </Col>
+        <Col class="bg-dark rounded shadow-lg p-3 me-5">
+            <h4 class="text-light">Licenses</h4>
+        </Col>
+        <Col class="bg-dark rounded shadow-lg p-3 me-5">
+            <h4 class="text-light">Licenses</h4>
+        </Col>
+    </Row>
+</Container>
