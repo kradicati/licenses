@@ -21,7 +21,7 @@
         })
 </script>
 
-<Row class="h-25">
+<Row class="h-100">
     <Col class="col-lg-2 bg-dark shadow-lg p-3">
         <Sidebar/>
     </Col>
