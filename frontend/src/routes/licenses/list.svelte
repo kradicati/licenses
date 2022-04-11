@@ -89,12 +89,12 @@
         <Col>
             <h1 class="text-light mb-4 me-auto">Licenses</h1>
         </Col>
-        <Col>
+        <Col sm={{ size: 'auto', offset: 1 }}>
             <Button color="primary" on:click={toggleModal()}>Create</Button>
         </Col>
     </Row>
     {#if $authStore.isLoggedIn}
-        <Table hover striped class="bg-dark rounded text-light">
+        <Table dark hover striped class="rounded">
             <thead>
             <tr>
                 <th class="text-light p-3">Key</th>
@@ -134,7 +134,7 @@
     {/if}
 </Container>
 
-<Modal isOpen={toggled} xl class="bg-dark">
+<Modal isOpen={toggled} xl>
     <ModalHeader>Create license</ModalHeader>
     <ModalBody>
         Create a license with the following parameters:
@@ -143,7 +143,7 @@
                 <Input valid={validLicense} bind:license on:input={validateLicense()} placeholder="Enter a value">asd{license}</Input>
             </FormGroup-->
             <!-- TODO validation -->
-            <FormGroup label="License">
+            <FormGroup>
                 <Input bind:value={license} on:input={validateLicense()} placeholder={license}/>
             </FormGroup>
 
