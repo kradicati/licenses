@@ -1,14 +1,10 @@
-<script lang="ts">
+<script>
+    import 'bootstrap/dist/css/bootstrap.min.css';
     import {Col, Row} from "sveltestrap/src";
-    import authStore from "../stores/authStore";
 </script>
 
-<Row>
+<Row class="h-100 bg-dark text-light">
     <Col>
-        <h1>Home page
-            {#if $authStore.isLoggedIn}
-                {$authStore.user.email}
-            {/if}
-        </h1>
+        test
     </Col>
 </Row>

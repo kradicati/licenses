@@ -1,8 +1,27 @@
 <script>
+    import 'bootstrap/dist/css/bootstrap.min.css';
     import {Col, Row} from "sveltestrap/src";
     import Sidebar from "../../lib/Sidebar.svelte";
     import axios from "axios";
-    import {getAuth} from "firebase/auth";
+    import {getAuth, onAuthStateChanged} from "firebase/auth";
+    import {onMount} from "svelte";
+    import {initializeApp} from "firebase/app";
+    import authStore from "../../stores/authStore";
+    import {firebaseConfig} from "../../lib/app";
+
+    let title = "Licenses"
+
+    onMount(async () => {
+        await initializeApp(firebaseConfig);
+
+        const auth = await getAuth()
+        onAuthStateChanged(auth, (user) => {
+            authStore.set({
+                isLoggedIn: user !== null,
+                user,
+            })
+        })
+    })
 
     axios.interceptors.request.use(
         async function (request) {
@@ -21,12 +40,16 @@
         })
 </script>
 
-<Row class="h-100">
+<svelte:head>
+    <title>{title}</title>
+</svelte:head>
+
+<Row>
     <Col class="col-lg-2 bg-dark shadow-lg p-3">
         <Sidebar/>
     </Col>
     <Col class="bg-black">
-        <slot></slot>
+        <slot/>
     </Col>
 </Row>
 

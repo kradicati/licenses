@@ -1,8 +1,5 @@
 <script lang="ts">
-
-    import authStore from "../../stores/authStore";
     import {Col, Row} from "sveltestrap/src";
-    import axios from "axios";
     import {Container} from "sveltestrap";
 </script>
 
