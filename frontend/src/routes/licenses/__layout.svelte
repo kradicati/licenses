@@ -3,11 +3,7 @@
     import {Col, Row} from "sveltestrap/src";
     import Sidebar from "../../lib/Sidebar.svelte";
     import axios from "axios";
-    import {getAuth, onAuthStateChanged} from "firebase/auth";
-    import {onMount} from "svelte";
-    import {initializeApp} from "firebase/app";
-    import authStore from "../../stores/authStore";
-    import {firebaseConfig} from "../../lib/app";
+    import {getAuth} from "firebase/auth";
     import '../../licenses.css'
 
     let title = "Licenses"
@@ -34,11 +30,12 @@
 </svelte:head>
 
 <main>
-    <Row class="h-100">
-        <Col class="col-lg-2 bg-dark shadow-lg p-3" style="width: 260px; max-width: 260px">
+    <Row class="h-100 gradient">
+        <Col class="sidebar col-lg-2 p-3" style="width: 100px; max-width: 100px; min-width: 100px; border-right: 1px solid rgba(255, 255, 255, 0.12);
+        background-color: rgba(3,2,12,0.5);">
             <Sidebar/>
         </Col>
-        <Col class="bg-black pe-4">
+        <Col class="bg-transparent pe-4">
             <slot/>
         </Col>
     </Row>
@@ -49,3 +46,9 @@
     <slot/>
 </Col-->
 
+<style>
+    main {
+        background: rgb(4, 3, 18);
+        background: linear-gradient(to bottom right, rgba(4, 3, 18, 1) 0%, rgba(7, 6, 32, 1) 40%, rgba(4, 3, 18, 1) 100%);
+    }
+</style>

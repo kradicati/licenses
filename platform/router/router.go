@@ -23,21 +23,6 @@ func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 
 	initFireStore(store)
 
-	/*
-		router.Use(cors.New(cors.Config{
-			AllowOrigins:     []string{"http://localhost:*"}, // TODO FIX
-			AllowMethods:     []string{"PUT", "PATCH"},
-			AllowHeaders:     []string{"Origin Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"},
-			ExposeHeaders:    []string{"Content-Length"},
-			AllowCredentials: true,
-			AllowOriginFunc: func(origin string) bool {
-				//return origin == "*://localhost:8008"
-				return true
-			},
-			MaxAge: 12 * time.Hour,
-		}))
-	*/
-
 	router.Use(configCors())
 
 	router.GET("/api/v1/verify/:id", verify.Handler(licenseRepository))
@@ -59,8 +44,8 @@ func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 
 				mgmt.Use(middleware.CheckLicenseAccess(licenseRepository))
 
-				mgmt.GET("/", license.Get)
-				mgmt.DELETE("/", license.Delete(licenseRepository))
+				mgmt.GET("", license.Get)
+				mgmt.DELETE("", license.Delete(licenseRepository))
 			}
 		}
 

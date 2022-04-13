@@ -20,24 +20,24 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 
 		err := repository.Get(id, license)
 		if err != nil {
-			abort(c)
+			abort(c, err)
 			return
 		}
 
 		if license.Expires != 0 && license.Expires-time.Now().Unix() < 0 {
-			abort(c)
+			abort(c, err)
 			return
 		}
 
 		ip := c.ClientIP()
 
 		if license.WhitelistedIps != nil && len(license.WhitelistedIps) > 0 && !internal.StringInSlice(ip, license.WhitelistedIps) {
-			abort(c)
+			abort(c, err)
 			return
 		}
 
 		if license.BlacklistedIps != nil && len(license.BlacklistedIps) > 0 && internal.StringInSlice(ip, license.BlacklistedIps) {
-			abort(c)
+			abort(c, err)
 			return
 		}
 
@@ -52,6 +52,6 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 	}
 }
 
-func abort(c *gin.Context) {
+func abort(c *gin.Context, err ...error) {
 	c.AbortWithStatusJSON(http.StatusTeapot, gin.H{"message": http.StatusText(http.StatusTeapot)})
 }
