@@ -35,10 +35,10 @@
 
 <main>
     <Row class="h-100">
-        <Col class="col-lg-2 bg-dark shadow-lg p-3" style="width: 30%; max-width: 30%">
+        <Col class="col-lg-2 bg-dark shadow-lg p-3" style="width: 260px; max-width: 260px">
             <Sidebar/>
         </Col>
-        <Col class="bg-black" style="padding-right: 80px">
+        <Col class="bg-black pe-4">
             <slot/>
         </Col>
     </Row>

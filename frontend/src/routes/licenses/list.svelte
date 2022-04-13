@@ -83,7 +83,7 @@
     })
 </script>
 
-<Container class="p-3 m-4">
+<div class="p-3 m-4">
     <Row class="justify-content-between">
         <Col>
             <h1 class="text-light mb-4 me-auto">Licenses</h1>
@@ -94,7 +94,7 @@
     </Row>
     {#if $authStore.isLoggedIn}
         <div class="round">
-            <Table dark hover striped>
+            <Table dark hover striped responsive>
                 <thead>
                 <tr>
                     <th class="text-light p-3">Key</th>
@@ -135,7 +135,7 @@
             </Table>
         </div>
     {/if}
-</Container>
+</div>
 
 <Modal isOpen={toggled} xl>
     <ModalHeader>Create license</ModalHeader>
