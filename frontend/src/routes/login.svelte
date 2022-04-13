@@ -1,4 +1,5 @@
 <script lang="ts">
+    import 'bootstrap/dist/css/bootstrap.min.css';
     import {Card, Container} from "sveltestrap";
     import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
     import { goto } from '$app/navigation';

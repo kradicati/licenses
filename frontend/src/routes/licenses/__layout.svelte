@@ -8,20 +8,9 @@
     import {initializeApp} from "firebase/app";
     import authStore from "../../stores/authStore";
     import {firebaseConfig} from "../../lib/app";
+    import '../../licenses.css'
 
     let title = "Licenses"
-
-    onMount(async () => {
-        await initializeApp(firebaseConfig);
-
-        const auth = await getAuth()
-        onAuthStateChanged(auth, (user) => {
-            authStore.set({
-                isLoggedIn: user !== null,
-                user,
-            })
-        })
-    })
 
     axios.interceptors.request.use(
         async function (request) {
@@ -44,14 +33,16 @@
     <title>{title}</title>
 </svelte:head>
 
-<Row>
-    <Col class="col-lg-2 bg-dark shadow-lg p-3">
-        <Sidebar/>
-    </Col>
-    <Col class="bg-black">
-        <slot/>
-    </Col>
-</Row>
+<main>
+    <Row class="h-100">
+        <Col class="col-lg-2 bg-dark shadow-lg p-3" style="width: 30%; max-width: 30%">
+            <Sidebar/>
+        </Col>
+        <Col class="bg-black" style="padding-right: 80px">
+            <slot/>
+        </Col>
+    </Row>
+</main>
 
 <!--Sidebar/>
 <Col>
