@@ -43,7 +43,7 @@ func (repo LicenseRepository) Update(id string, update *[]firestore.Update) erro
 	return nil
 }
 
-func (repo LicenseRepository) UpdateIpLog(id string, ips ...string) error {
+func (repo LicenseRepository) UpdateIpLog(id string, ips ...model.IpLog) error {
 	update := []firestore.Update{{Path: "ip_log", Value: ips}}
 	err := repo.Update(id, &update)
 	if err != nil {

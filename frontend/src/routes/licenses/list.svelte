@@ -24,7 +24,7 @@
     let toggled = false
 
     $: loadData = async () => {
-        return await axios.get('http://localhost:8000/api/v1/licenses/')
+        return await axios.get('http://localhost:8000/api/v1/licenses')
     }
 
     $: toggleModal = () => {
@@ -62,7 +62,7 @@
 
     //2022-4-10
     $: create = async () => {
-        let response = await axios.post('http://localhost:8000/api/v1/licenses/', {
+        let response = await axios.post('http://localhost:8000/api/v1/licenses', {
             "id": license,
             "expires": new moment(expiry).unix(),
             "product": product,

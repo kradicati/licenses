@@ -35,7 +35,7 @@
         background-color: rgba(3,2,12,0.5);">
             <Sidebar/>
         </Col>
-        <Col class="bg-transparent pe-4">
+        <Col class="bg-transparent pe-4" style="overflow-y: scroll; height: 100%;">
             <slot/>
         </Col>
     </Row>

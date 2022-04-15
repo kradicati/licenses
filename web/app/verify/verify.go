@@ -18,33 +18,49 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 
 		license := &model.License{}
 
+		now := time.Now().Unix()
+		success := true
+		reason := ""
+
 		err := repository.Get(id, license)
 		if err != nil {
-			abort(c, err)
-			return
+			success = false
+			reason = err.Error()
 		}
 
-		if license.Expires != 0 && license.Expires-time.Now().Unix() < 0 {
-			abort(c, err)
-			return
+		if success && license.Expires != 0 && license.Expires-now < 0 {
+			success = false
+			reason = "expired"
 		}
 
 		ip := c.ClientIP()
 
-		if license.WhitelistedIps != nil && len(license.WhitelistedIps) > 0 && !internal.StringInSlice(ip, license.WhitelistedIps) {
-			abort(c, err)
-			return
+		if success && license.WhitelistedIps != nil && len(license.WhitelistedIps) > 0 && !internal.StringInSlice(ip, license.WhitelistedIps) {
+			success = false
+			reason = "not whitelisted"
 		}
 
-		if license.BlacklistedIps != nil && len(license.BlacklistedIps) > 0 && internal.StringInSlice(ip, license.BlacklistedIps) {
-			abort(c, err)
-			return
+		if success && license.BlacklistedIps != nil && len(license.BlacklistedIps) > 0 && internal.StringInSlice(ip, license.BlacklistedIps) {
+			success = false
+			reason = "blacklisted"
 		}
 
-		err = repository.UpdateIpLog(license.Id, append(license.IpLog, ip)...)
+		ipLog := model.IpLog{
+			Ip:     ip,
+			Time:   now,
+			Status: success,
+			Reason: reason,
+		}
+
+		err = repository.UpdateIpLog(license.Id, append(license.IpLog, ipLog)...)
 		if err != nil {
 			fmt.Println(err.Error())
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to insert ip into log."})
+			return
+		}
+
+		if !success {
+			abort(c)
 			return
 		}
 
@@ -52,6 +68,6 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 	}
 }
 
-func abort(c *gin.Context, err ...error) {
+func abort(c *gin.Context) {
 	c.AbortWithStatusJSON(http.StatusTeapot, gin.H{"message": http.StatusText(http.StatusTeapot)})
 }

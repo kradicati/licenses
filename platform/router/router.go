@@ -36,8 +36,8 @@ func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 
 			licenseGroup.Use(middleware.CheckAPIKey(userRepository))
 
-			licenseGroup.POST("/", licenses.Create(licenseRepository, userRepository))
-			licenseGroup.GET("/", licenses.List(licenseRepository))
+			licenseGroup.POST("", licenses.Create(licenseRepository, userRepository))
+			licenseGroup.GET("", licenses.List(licenseRepository))
 
 			{ // :id
 				mgmt := licenseGroup.Group("/:id")
@@ -52,7 +52,7 @@ func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 		{ // users
 			userGroup := v1.Group("/users")
 
-			userGroup.POST("/", middleware.CheckRoles("admin"), users.Create(client))
+			userGroup.POST("", middleware.CheckRoles("admin"), users.Create(client))
 		}
 	}
 

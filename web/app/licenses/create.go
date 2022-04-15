@@ -27,7 +27,7 @@ func Create(licenseRepository *repository.LicenseRepository,
 
 		license.Creator = uid.(string)
 		license.Created = time.Now().Unix()
-		license.IpLog = make([]string, 0)
+		license.IpLog = make([]model.IpLog, 0)
 		license.WhitelistedIps = makeIfAbsent(license.WhitelistedIps)
 		license.BlacklistedIps = makeIfAbsent(license.BlacklistedIps)
 
