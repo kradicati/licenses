@@ -1,13 +1,13 @@
 <script lang="ts">
     import axios from "axios";
     import {page} from '$app/stores';
-    import {Container, ListGroup, ListGroupItem, Spinner} from "sveltestrap";
+    import {Container, ListGroup, ListGroupItem, Spinner, Table} from "sveltestrap";
     import {Col, Row} from "sveltestrap/src";
     import authStore from "../../stores/authStore";
     import Line from "svelte-chartjs/src/Line.svelte"
     import Doughnut from "svelte-chartjs/src/Doughnut.svelte"
     import moment from "moment";
-    import {groupWeek, Pair} from "../../lib/utils";
+    import {formatDate, groupWeek, Pair} from "../../lib/utils";
 
     $: loadData = async () => {
         const id = $page.params.id
@@ -112,15 +112,81 @@
                 </Row>
                 <Row class="ms-1">
                     <Col class="glass me-4 col-md-4">
-                        <h4 class="p-3">Information</h4>
+                        <div class="p-3">
+                            <h4>Information</h4>
+
+                            <div class="my-2">
+                                <div>Key</div>
+                                <div class="secondary">{license.data.id}</div>
+                            </div>
+
+                            <div class="my-2">
+                                <div>Creator</div>
+                                <div class="secondary">{license.data.creator}</div>
+                            </div>
+
+                            <div class="my-2">
+                                <div>Created</div>
+                                <div class="secondary">{formatDate(license.data.created)}</div>
+                            </div>
+
+                            <div class="my-2">
+                                <div>Expires</div>
+                                <div class="secondary">{formatDate(license.data.expires)}</div>
+                            </div>
+
+                            <div class="my-2">
+                                <div>Product</div>
+                                <div class="secondary">{license.data.product}</div>
+                            </div>
+
+                            <div class="my-2">
+                                <div>Additional Info</div>
+                                <div class="secondary">{license.data.additional_info}</div>
+                            </div>
+
+                            <!--div class="my-2">
+                                <div>Whitelisted IPs</div>
+                                <div class="secondary">{license.data.id}</div>
+                            </div>
+
+                            <div class="my-2">
+                                <div>Blacklisted IPs</div>
+                                <div class="secondary">{license.data.id}</div>
+                            </div-->
+
+                        </div>
                     </Col>
-                    <Col class="glass">
-                        <h4 class="p-3">IP Log</h4>
+                    <Col class="col-md-6 outline p-0">
+                        <Table reactive hover striped class="glass-table h-100 w-100">
+                            <thead>
+                            <tr>
+                                <th class="text-light p-3">Key</th>
+                                <th class="text-light p-3">Created</th>
+                                <th class="text-light p-3">Expires</th>
+                                <th class="text-light p-3">Product</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {#each license.data.ip_log as log}
+                                <tr>
+                                    <td class="text-light p-3">{log.ip}</td>
+                                    <td class="text-light p-3">{formatDate(log.time)}</td>
+                                    <td class="text-light p-3">{log.status}</td>
+                                    <td class="text-light p-3">{log.reason}</td>
+                                </tr>
+                            {/each}
+
+                            <!--Spinner class="m-auto text-primary"/-->
+                            </tbody>
+                        </Table>
+                        <!--h4 class="p-3">IP Log</h4>
                         <ListGroup>
                             {#each license.data.ip_log as ip}
                                 <ListGroupItem class="bg-transparent text-light lgi">{ip}</ListGroupItem>
                             {/each}
-                        </ListGroup>
+                        </ListGroup-->
                     </Col>
                 </Row>
             </div>
@@ -146,5 +212,9 @@
         height: 1px;
         width: 50%; /* or 100px */
         border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .secondary {
+        color: #b1b7cc;
     }
 </style>

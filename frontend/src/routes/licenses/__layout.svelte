@@ -5,8 +5,18 @@
     import axios from "axios";
     import {getAuth} from "firebase/auth";
     import '../../licenses.css'
+    import {goto} from '$app/navigation';
+    import {onMount} from "svelte";
 
     let title = "Licenses"
+
+    onMount(() => {
+        getAuth().onAuthStateChanged(auth => {
+            if (!auth) {
+                goto("/login")
+            }
+        });
+    })
 
     axios.interceptors.request.use(
         async function (request) {
