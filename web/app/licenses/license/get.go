@@ -2,6 +2,7 @@ package license
 
 import (
 	"github.com/gin-gonic/gin"
+	"licenses/internal"
 	"net/http"
 )
 
@@ -9,7 +10,7 @@ func Get(c *gin.Context) {
 	license, e := c.Get("licenses")
 
 	if !e {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": http.StatusText(http.StatusNotFound)})
+		internal.Abort(c, http.StatusNotFound)
 		return
 	}
 
