@@ -27,7 +27,7 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 			success = false
 			reason = err.Error()
 			//TODO log this as well
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": http.StatusText(http.StatusNotFound)})
+			internal.Abort(c, http.StatusNotFound)
 			return
 		}
 
@@ -63,14 +63,10 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 		}
 
 		if !success {
-			abort(c)
+			internal.Abort(c, http.StatusTeapot)
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{"message": http.StatusText(http.StatusOK)})
 	}
-}
-
-func abort(c *gin.Context) {
-	c.AbortWithStatusJSON(http.StatusTeapot, gin.H{"message": http.StatusText(http.StatusTeapot)})
 }

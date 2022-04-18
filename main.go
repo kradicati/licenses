@@ -35,7 +35,7 @@ func main() {
 
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		log.Fatalln("failed to firebase app", err)
+		log.Fatalln("failed to init firebase app", err)
 	}
 
 	auth, err := fb.InitAuth(app)
