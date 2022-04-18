@@ -26,6 +26,9 @@ func Handler(repository *repository.LicenseRepository) gin.HandlerFunc {
 		if err != nil {
 			success = false
 			reason = err.Error()
+			//TODO log this as well
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": http.StatusText(http.StatusNotFound)})
+			return
 		}
 
 		if success && license.Expires != 0 && license.Expires-now < 0 {

@@ -2,9 +2,11 @@ package router
 
 import (
 	"cloud.google.com/go/firestore"
+	"crypto/rsa"
 	"firebase.google.com/go/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/render"
 	"licenses/data/repository"
 	"licenses/platform/middleware"
 	"licenses/web/app/licenses"
@@ -18,6 +20,11 @@ var (
 	userRepository    *repository.UserRepository
 )
 
+var (
+	PublicKey  []byte
+	PrivateKey *rsa.PrivateKey
+)
+
 func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 	router := gin.Default()
 
@@ -26,6 +33,12 @@ func New(client *auth.Client, store *firestore.Client) *gin.Engine {
 	router.Use(configCors())
 
 	router.GET("/api/v1/verify/:id", verify.Handler(licenseRepository))
+	router.GET("/api/v1/publicKey", func(c *gin.Context) {
+		c.Render(200, render.Data{
+			ContentType: "text/plain",
+			Data:        PublicKey,
+		})
+	})
 
 	{ // v1
 		v1 := router.Group("/api/v1")
